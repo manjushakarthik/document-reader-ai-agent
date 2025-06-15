@@ -7,3 +7,5 @@ langchainhub
 langchain-ollama
 chromadb
 tiktoken
+sentence-transformers
+langchain-huggingface
