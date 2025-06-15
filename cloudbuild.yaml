@@ -1,11 +1,11 @@
 steps:
  # Step 1: Build Docker image
  - name: 'gcr.io/cloud-builders/docker'
-   args: ['build', '-t', 'us-central1-docker.pkg.dev/document-qa-bot-463020/doc-reader-repo/reader-app:${SHORT_SHA}', '.']
+   args: ['build', '-t', 'us-central1-docker.pkg.dev/document-qa-bot-463020/doc-reader-repo/reader-app:${BUILD_ID}', '.']
  
  # Step 2: Push Docker image
  - name: 'gcr.io/cloud-builders/docker'
-   args: ['push', 'us-central1-docker.pkg.dev/document-qa-bot-463020/doc-reader-repo/reader-app:${SHORT_SHA}']
+   args: ['push', 'us-central1-docker.pkg.dev/document-qa-bot-463020/doc-reader-repo/reader-app:${BUILD_ID}']
  
  # Step 3: Deploy to Cloud Run
  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -13,11 +13,14 @@ steps:
    args:
      [
        'run', 'deploy', 'doc-reader-app',
-       '--image', 'us-central1-docker.pkg.dev/document-qa-bot-463020/doc-reader-repo/reader-app:${SHORT_SHA}',
+       '--image', 'us-central1-docker.pkg.dev/document-qa-bot-463020/doc-reader-repo/reader-app:${BUILD_ID}',
        '--region', 'us-central1',
        '--platform', 'managed',
        '--allow-unauthenticated'
      ]
 
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 images:
- - 'us-central1-docker.pkg.dev/document-qa-bot-463020/doc-reader-repo/reader-app:${SHORT_SHA}'
+ - 'us-central1-docker.pkg.dev/document-qa-bot-463020/doc-reader-repo/reader-app:${BUILD_ID}'
