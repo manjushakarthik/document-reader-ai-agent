@@ -49,5 +49,5 @@ if uploaded_file:
             with st.spinner("Thinking..."):
                 relevant_chunks = retriever.invoke(question)
                 answer = chain.invoke({"reviews": relevant_chunks, "question": question})
-            st.markdown("### 🧠 Answer:")
+            st.markdown("### Answer:")
             st.write(answer)
