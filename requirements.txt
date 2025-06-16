@@ -4,8 +4,9 @@ langchain
 langchain-community
 langchain-core
 langchainhub
-langchain-ollama
 chromadb
 tiktoken
 sentence-transformers
 langchain-huggingface
+transformers
+torch

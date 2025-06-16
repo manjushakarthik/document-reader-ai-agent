@@ -2,9 +2,10 @@ import streamlit as st
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_ollama.llms import OllamaLLM
+from transformers import pipeline
+from langchain_huggingface import HuggingFacePipeline
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_huggingface import HuggingFaceEmbeddings
 
 def extract_text(file):
     if file.type == "application/pdf":
@@ -29,19 +30,25 @@ if uploaded_file:
         embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
             model_kwargs={'device': 'cpu'}
-        )
-        
+)
         vectorstore = Chroma.from_texts(chunks, embedding=embeddings)
         retriever = vectorstore.as_retriever()
         
-        model = OllamaLLM(model="llama3.2")
+        hf_pipeline = pipeline(
+            "text-generation",
+            model="microsoft/DialoGPT-small",
+            max_length=512,
+            temperature=0.7,
+            device=-1  # Use CPU
+)
+        model = HuggingFacePipeline(pipeline=hf_pipeline)
         
         template = """
-You are an expert in answering questions based on the following document excerpts:
-{reviews}
+        You are an expert in answering questions based on the following document excerpts:
+        {reviews}
 
-Question: {question}
-"""
+        Question: {question}
+        """
         prompt = ChatPromptTemplate.from_template(template)
         chain = prompt | model
         
